@@ -57,6 +57,20 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Custom vintage colors
+        parchment: "hsl(var(--parchment))",
+        "aged-paper": "hsl(var(--aged-paper))",
+        sepia: "hsl(var(--sepia))",
+        "ink-black": "hsl(var(--ink-black))",
+        maroon: "hsl(var(--maroon))",
+        "muted-gold": "hsl(var(--muted-gold))",
+        "warm-brown": "hsl(var(--warm-brown))",
+        cream: "hsl(var(--cream))",
+      },
+      fontFamily: {
+        display: ["Playfair Display", "serif"],
+        body: ["Lora", "serif"],
+        elegant: ["Cormorant Garamond", "serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -65,25 +79,33 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "page-flip": {
+          "0%": { transform: "rotateY(0deg)" },
+          "50%": { transform: "rotateY(-15deg)" },
+          "100%": { transform: "rotateY(0deg)" },
+        },
+        "float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "page-flip": "page-flip 0.6s ease-in-out",
+        "float": "float 4s ease-in-out infinite",
+      },
+      boxShadow: {
+        "book": "0 4px 6px -1px hsl(var(--sepia) / 0.2), 0 2px 4px -2px hsl(var(--sepia) / 0.1), 4px 4px 20px hsl(var(--warm-brown) / 0.15)",
+        "book-hover": "0 10px 20px -5px hsl(var(--sepia) / 0.3), 0 4px 6px -4px hsl(var(--sepia) / 0.2), 8px 8px 30px hsl(var(--warm-brown) / 0.2)",
+        "page": "0 1px 3px hsl(var(--sepia) / 0.12), 0 1px 2px hsl(var(--sepia) / 0.24)",
       },
     },
   },
