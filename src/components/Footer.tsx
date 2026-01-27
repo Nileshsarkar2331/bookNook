@@ -57,7 +57,7 @@ const Footer = () => {
                 <Twitter className="w-5 h-5" />
               </a>
               <a 
-                href="#" 
+                href="https://www.instagram.com/nilesh_sarkar2331/" 
                 className="w-10 h-10 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center"
               >
                 <Instagram className="w-5 h-5" />
@@ -126,17 +126,17 @@ const Footer = () => {
 
             {/* Contact info */}
             <div className="space-y-2 pt-4">
-              <a href="mailto:hello@booknook.com" className="flex items-center gap-2 font-body text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a href="mailto:nonvegcoder@gmail.com" className="flex items-center gap-2 font-body text-sm text-muted-foreground hover:text-primary transition-colors">
                 <Mail className="w-4 h-4" />
-                hello@booknook.com
+                nonvegcoder@gmail.com
               </a>
               <a href="tel:+911234567890" className="flex items-center gap-2 font-body text-sm text-muted-foreground hover:text-primary transition-colors">
                 <Phone className="w-4 h-4" />
-                +91 123 456 7890
+                +91 8899115550
               </a>
               <div className="flex items-center gap-2 font-body text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4" />
-                Mumbai, India
+                Uttarkhand, India
               </div>
             </div>
           </div>
@@ -148,7 +148,7 @@ const Footer = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
             <p className="font-elegant text-sm text-muted-foreground italic">
-              © 2024 BookNook. Crafted with ♥ for book lovers everywhere.
+              © 2026 BookNook. Crafted with ♥ for book lovers everywhere.
             </p>
             <div className="flex gap-6">
               <Link to="#" className="font-body text-xs text-muted-foreground hover:text-primary transition-colors">
@@ -165,6 +165,11 @@ const Footer = () => {
 
           {/* Decorative end flourish */}
           <div className="flex items-center justify-center gap-4 mt-6">
+            <div className="w-16 h-px bg-sepia/20" />
+            <span className="font-elegant text-sm text-sepia/40 italic">~ Made by Nilesh Sarkar~</span>
+            <div className="w-16 h-px bg-sepia/20" />
+          </div>
+            <div className="flex items-center justify-center gap-4 mt-6">
             <div className="w-16 h-px bg-sepia/20" />
             <span className="font-elegant text-sm text-sepia/40 italic">~ The End ~</span>
             <div className="w-16 h-px bg-sepia/20" />
