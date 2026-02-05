@@ -1,6 +1,7 @@
 import { Heart, ShoppingCart, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useCart } from "@/lib/cart";
 
 interface BookCardProps {
   title: string;
@@ -30,6 +31,9 @@ const BookCard = ({
   imageUrl,
   isFeatured = false,
 }: BookCardProps) => {
+  const { addItem } = useCart();
+  const bookId = `${title}::${author}`;
+
   return (
     <div className="group relative">
       {/* Book card styled like vintage book cover */}
@@ -75,7 +79,18 @@ const BookCard = ({
                 <Eye className="w-4 h-4 mr-1" />
                 Preview
               </Button>
-              <Button size="sm" className="bg-primary hover:bg-primary/90">
+              <Button
+                size="sm"
+                className="bg-primary hover:bg-primary/90"
+                onClick={() =>
+                  addItem({
+                    id: bookId,
+                    title,
+                    author,
+                    price,
+                  })
+                }
+              >
                 <ShoppingCart className="w-4 h-4 mr-1" />
                 Add
               </Button>

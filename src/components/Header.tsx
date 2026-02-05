@@ -1,12 +1,24 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, BookOpen, Search, ShoppingCart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useCart } from "@/lib/cart";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+  const { items, totalItems, totalPrice, removeItem, clear } = useCart();
+
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const query = searchQuery.trim();
+    navigate(query ? `/browse?query=${encodeURIComponent(query)}` : "/browse");
+    setIsSearchOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-parchment/95 backdrop-blur-sm border-b border-sepia/20 shadow-page">
@@ -62,18 +74,77 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
-            <div className="relative">
-              <Input 
-                placeholder="Search for books..." 
+            <form onSubmit={handleSearchSubmit} className="relative">
+              <Input
+                placeholder="Search for books..."
+                value={searchQuery}
+                onChange={event => setSearchQuery(event.target.value)}
                 className="w-48 lg:w-64 bg-cream border-sepia/30 focus:border-muted-gold pr-10 font-body text-sm"
               />
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sepia" />
+            </form>
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-foreground hover:text-primary hover:bg-secondary relative"
+                onClick={() => setIsCartOpen(open => !open)}
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </Button>
+              {isCartOpen && (
+                <div className="absolute right-0 mt-3 w-80 bg-cream border border-sepia/20 shadow-page rounded-lg p-4 z-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-display text-lg text-foreground">Your Cart</span>
+                    <Button variant="ghost" size="sm" className="text-xs" onClick={clear}>
+                      Clear
+                    </Button>
+                  </div>
+                  {items.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">Your cart is empty.</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {items.map(item => (
+                        <div key={item.id} className="flex items-center justify-between gap-3">
+                          <div>
+                            <div className="text-sm font-body text-foreground line-clamp-1">{item.title}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {item.author} · {item.quantity} × ₹{item.price}
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-xs text-maroon"
+                            onClick={() => removeItem(item.id)}
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ))}
+                      <div className="pt-2 border-t border-sepia/20 flex items-center justify-between">
+                        <span className="text-sm font-body text-muted-foreground">Total</span>
+                        <span className="font-display text-lg text-foreground">₹{totalPrice}</span>
+                      </div>
+                      <Button asChild className="w-full bg-primary hover:bg-primary/90">
+                        <Link to="/checkout" onClick={() => setIsCartOpen(false)}>
+                          Checkout
+                        </Link>
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-            <Button variant="ghost" size="icon" className="text-foreground hover:text-primary hover:bg-secondary">
-              <ShoppingCart className="w-5 h-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="text-foreground hover:text-primary hover:bg-secondary">
-              <User className="w-5 h-5" />
+            <Button asChild variant="ghost" size="icon" className="text-foreground hover:text-primary hover:bg-secondary">
+              <Link to="/account">
+                <User className="w-5 h-5" />
+              </Link>
             </Button>
           </div>
 
@@ -101,13 +172,15 @@ const Header = () => {
         {/* Mobile Search */}
         {isSearchOpen && (
           <div className="md:hidden pb-4 animate-fade-in-up">
-            <div className="relative">
-              <Input 
-                placeholder="Search for books..." 
+            <form onSubmit={handleSearchSubmit} className="relative">
+              <Input
+                placeholder="Search for books..."
+                value={searchQuery}
+                onChange={event => setSearchQuery(event.target.value)}
                 className="w-full bg-cream border-sepia/30 focus:border-muted-gold pr-10 font-body"
               />
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sepia" />
-            </div>
+            </form>
           </div>
         )}
 
@@ -144,13 +217,22 @@ const Header = () => {
                 About
               </Link>
               <div className="flex gap-4 pt-4 border-t border-sepia/20">
-                <Button variant="outline" className="flex-1 border-sepia/30">
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  Cart
+                <Button asChild variant="outline" className="flex-1 border-sepia/30">
+                  <Link to="/checkout" onClick={() => setIsMenuOpen(false)}>
+                    <ShoppingCart className="w-4 h-4 mr-2" />
+                    Cart
+                    {totalItems > 0 && (
+                      <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold">
+                        {totalItems}
+                      </span>
+                    )}
+                  </Link>
                 </Button>
-                <Button variant="outline" className="flex-1 border-sepia/30">
-                  <User className="w-4 h-4 mr-2" />
-                  Account
+                <Button asChild variant="outline" className="flex-1 border-sepia/30">
+                  <Link to="/account" onClick={() => setIsMenuOpen(false)}>
+                    <User className="w-4 h-4 mr-2" />
+                    Account
+                  </Link>
                 </Button>
               </div>
             </div>

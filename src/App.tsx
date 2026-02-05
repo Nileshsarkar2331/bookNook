@@ -1,27 +1,113 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
+
 import Index from "./pages/Index";
+import SignInPage from "./pages/SignIn";
 import NotFound from "./pages/NotFound";
+import Checkout from "./pages/Checkout";
+import Browse from "./pages/Browse";
+import Sell from "./pages/Sell";
+import About from "./pages/About";
+import Account from "./pages/Account";
 
-const queryClient = new QueryClient();
+export default function App() {
+  return (
+    <Routes>
+      {/* 🔑 SIGN IN */}
+      <Route path="/sign-in/*" element={<SignInPage />} />
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      {/* 🔐 PROTECTED HOME */}
+      <Route
+        path="/"
+        element={
+          <>
+            <SignedIn>
+              <Index />
+            </SignedIn>
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          </>
+        }
+      />
 
-export default App;
+      {/* 📚 BROWSE */}
+      <Route
+        path="/browse"
+        element={
+          <>
+            <SignedIn>
+              <Browse />
+            </SignedIn>
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          </>
+        }
+      />
+
+      {/* 📝 SELL */}
+      <Route
+        path="/sell"
+        element={
+          <>
+            <SignedIn>
+              <Sell />
+            </SignedIn>
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          </>
+        }
+      />
+
+      {/* ℹ️ ABOUT */}
+      <Route
+        path="/about"
+        element={
+          <>
+            <SignedIn>
+              <About />
+            </SignedIn>
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          </>
+        }
+      />
+
+      {/* 👤 ACCOUNT */}
+      <Route
+        path="/account"
+        element={
+          <>
+            <SignedIn>
+              <Account />
+            </SignedIn>
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          </>
+        }
+      />
+
+      {/* 🧾 CHECKOUT */}
+      <Route
+        path="/checkout"
+        element={
+          <>
+            <SignedIn>
+              <Checkout />
+            </SignedIn>
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          </>
+        }
+      />
+
+      {/* ❌ 404 */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+}
