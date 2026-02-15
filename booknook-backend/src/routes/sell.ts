@@ -13,6 +13,7 @@ type Listing = {
   imageUrl?: string;
   sellerEmail: string;
   createdAt: string;
+  status: "pending" | "approved" | "rejected";
 };
 
 const listings: Listing[] = [];
@@ -69,10 +70,36 @@ router.post("/", (req, res) => {
     imageUrl,
     sellerEmail,
     createdAt: new Date().toISOString(),
+    status: "pending",
   };
 
   listings.unshift(listing);
   return res.status(201).json({ listing });
 });
 
+router.patch("/:id", (req, res) => {
+  const { id } = req.params;
+  const listing = listings.find(item => item.id === id);
+  if (!listing) {
+    return res.status(404).json({ message: "Listing not found." });
+  }
+
+  const { status, price } = req.body ?? {};
+
+  if (status && ["pending", "approved", "rejected"].includes(status)) {
+    listing.status = status;
+  }
+
+  if (price !== undefined) {
+    const nextPrice = Number(price);
+    if (!Number.isFinite(nextPrice) || nextPrice <= 0) {
+      return res.status(400).json({ message: "Invalid price." });
+    }
+    listing.price = Math.round(nextPrice);
+  }
+
+  return res.json({ listing });
+});
+
 export default router;
+export { listings };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,19 +7,54 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/lib/cart";
+import { useUser } from "@clerk/clerk-react";
 
 const Checkout = () => {
-  const { items, totalItems, totalPrice } = useCart();
+  const { items, totalItems, totalPrice, clear } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useUser();
+  const apiBaseUrl = useMemo(
+    () => import.meta.env.VITE_API_BASE_URL || "http://localhost:5000",
+    []
+  );
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
-    // TODO: Replace with API call.
-    setTimeout(() => {
+
+    try {
+      const form = new FormData(event.currentTarget);
+      const shipping = {
+        fullName: String(form.get("fullName") || ""),
+        phone: String(form.get("phone") || ""),
+        email: String(form.get("email") || ""),
+        address1: String(form.get("address1") || ""),
+        address2: String(form.get("address2") || ""),
+        city: String(form.get("city") || ""),
+        state: String(form.get("state") || ""),
+        postal: String(form.get("postal") || ""),
+        country: String(form.get("country") || ""),
+        notes: String(form.get("notes") || ""),
+      };
+
+      const response = await fetch(`${apiBaseUrl}/api/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items, shipping }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || "Failed to place order.");
+      }
+
+      clear();
       setIsSubmitting(false);
       alert("Order placed! We'll email your shipping confirmation shortly.");
-    }, 600);
+    } catch (err) {
+      setIsSubmitting(false);
+      alert(err instanceof Error ? err.message : "Failed to place order.");
+    }
   };
 
   return (
@@ -51,7 +86,14 @@ const Checkout = () => {
               </div>
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" type="email" placeholder="you@example.com" required />
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  defaultValue={user?.primaryEmailAddress?.emailAddress ?? ""}
+                  required
+                />
               </div>
             </div>
 

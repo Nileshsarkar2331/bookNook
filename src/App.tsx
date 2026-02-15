@@ -9,6 +9,9 @@ import Browse from "./pages/Browse";
 import Sell from "./pages/Sell";
 import About from "./pages/About";
 import Account from "./pages/Account";
+import Admin from "./pages/Admin";
+import AdminGate from "./components/AdminGate";
+import AdminRedirect from "./components/AdminRedirect";
 
 export default function App() {
   return (
@@ -22,7 +25,9 @@ export default function App() {
         element={
           <>
             <SignedIn>
-              <Index />
+              <AdminRedirect>
+                <Index />
+              </AdminRedirect>
             </SignedIn>
             <SignedOut>
               <RedirectToSignIn />
@@ -83,6 +88,23 @@ export default function App() {
           <>
             <SignedIn>
               <Account />
+            </SignedIn>
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          </>
+        }
+      />
+
+      {/* 🛡️ ADMIN */}
+      <Route
+        path="/admin"
+        element={
+          <>
+            <SignedIn>
+              <AdminGate>
+                <Admin />
+              </AdminGate>
             </SignedIn>
             <SignedOut>
               <RedirectToSignIn />

@@ -4,6 +4,7 @@ import { Menu, X, BookOpen, Search, ShoppingCart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/lib/cart";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -141,6 +142,7 @@ const Header = () => {
                 </div>
               )}
             </div>
+            <ThemeToggle />
             <Button asChild variant="ghost" size="icon" className="text-foreground hover:text-primary hover:bg-secondary">
               <Link to="/account">
                 <User className="w-5 h-5" />
@@ -158,6 +160,7 @@ const Header = () => {
             >
               <Search className="w-5 h-5" />
             </Button>
+            <ThemeToggle />
             <Button 
               variant="ghost" 
               size="icon" 

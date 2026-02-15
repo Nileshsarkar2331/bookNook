@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/clerk-react";
 import App from "./App";
 import "./index.css";
 import { CartProvider } from "./lib/cart";
+import { ThemeProvider } from "./lib/theme";
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -16,9 +17,11 @@ createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ClerkProvider publishableKey={clerkPubKey}>
       <BrowserRouter>
-        <CartProvider>
-          <App />
-        </CartProvider>
+        <ThemeProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </ClerkProvider>
   </React.StrictMode>
